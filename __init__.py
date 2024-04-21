@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
 
 # Configure OpenAI API
-
+openai.api_key = ""
 
 # Define a route to render the abada.html template
 @app.route('/')
