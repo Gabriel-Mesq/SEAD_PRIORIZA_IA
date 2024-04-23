@@ -6,16 +6,33 @@
 
 {% block content %}
 
-<div class="chat-container">
-    <div id="chat-box">
-        <div class="chat-message bot-message">
-            <span class="message">Welcome to the SEAD AI assistant. How can I help you?</span>
-        </div>
-    </div>
-    <input type="text" id="user-input" class="form-control" placeholder="Type your message...">
-    <button id="send-btn">Send</button>
-</div>
+<h1>Upload a document for analysis</h1>
+<p>Accepted formats: .pdf, .docx</p>
+<form id="uploadForm" enctype="multipart/form-data">
+    <label for="fileInput">Upload a file:</label>
+    <input type="file" id="fileInput" name="file" required accept=".pdf, .docx">
+    <button type="submit">Upload and Analyze</button>
+</form>
+<div id="fileResponseArea"></div>
 
-
+<script>
+    document.getElementById('uploadForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('file', document.getElementById('fileInput').files[0]);
+        document.getElementById('fileResponseArea').innerHTML = '<p>Uploading and analyzing document...</p>';
+       
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.response) {
+            document.getElementById('fileResponseArea').innerText = data.response;
+        } else {
+            document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Failed to process file.');
+        }
+    };
+</script>
 
 {% endblock %}
