@@ -6,12 +6,12 @@
 
 {% block content %}
 
-<h1>Upload a document for analysis</h1>
-<p>Accepted formats: .pdf, .docx</p>
+<h1>Envie um documento para análise</h1>
+<p>Formatos aceitos: .pdf, .docx</p>
 <form id="uploadForm" enctype="multipart/form-data">
-    <label for="fileInput">Upload a file:</label>
+    <label for="fileInput">Selecione um arquivo:</label>
     <input type="file" id="fileInput" name="file" required accept=".pdf, .docx">
-    <button type="submit">Upload and Analyze</button>
+    <button type="submit">Enviar e Analisar</button>
 </form>
 <div id="fileResponseArea"></div>
 
@@ -20,7 +20,7 @@
         event.preventDefault();
         const formData = new FormData();
         formData.append('file', document.getElementById('fileInput').files[0]);
-        document.getElementById('fileResponseArea').innerHTML = '<p>Uploading and analyzing document...</p>';
+        document.getElementById('fileResponseArea').innerHTML = '<p>Enviando e analisando o documento...</p>';
        
         const response = await fetch('/upload', {
             method: 'POST',
@@ -30,7 +30,7 @@
         if (data.response) {
             document.getElementById('fileResponseArea').innerText = data.response;
         } else {
-            document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Failed to process file.');
+            document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
         }
     };
 </script>
