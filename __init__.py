@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
 
 # Configure OpenAI API
-openai.api_key = ""
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Define a route to render the HTML template
 @app.route('/')
@@ -53,7 +53,7 @@ def upload_file():
 
         # Analyze the text using OpenAI GPT-4 with a specific prompt in chat completions
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-4-turbo-2024-04-09",
             messages=[{"role": "system", "content": msg},
                       {"role": "user", "content": text}]
         )
