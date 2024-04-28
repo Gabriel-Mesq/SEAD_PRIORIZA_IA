@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
 
 # Configure OpenAI API
-openai.api_key = ""
+openai.api_key = "abada"
 
 # Define a route to render the HTML template
 @app.route('/')
@@ -28,15 +28,14 @@ def upload_file():
         text = ""
         if file.filename.endswith('.pdf'):
             file.seek(0)  # Ensure the stream is at the start
-            text = extract_text_from_pdf(file)
+            text = optimize_text(extract_text_from_pdf(file))
         elif file.filename.endswith('.docx'):
             file.seek(0)  # Ensure the stream is at the start
-            text = extract_text_from_docx(file)
+            text = optimize_text(extract_text_from_docx(file))
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
         msg = """
-
             Olhando as TAP's (Termo de Abertura de Projeto) que foram enviadas, preciso que você analise os documentos, e, utilizando as informações disponíveis, focando em JUSTIFICATIVA e OBJETIVOS. Categorize-as individualmente com alguma dessas possíveis categorias: Cidadões, Servidores, Orgãos e Entidades publicas.
 
             Objetivo Operacional - Servidores: Definimos e aplicamos uma metodologia para medição da satisfação dos servidores. KR 1 - Aplicamos a metodologia em 38 órgãos do estado. KR 2 - Obtivemos 90% De respostas ao questionário. KR 3 - Consolidamos os resultados da pesquisa. 
@@ -53,9 +52,10 @@ def upload_file():
 
         # Analyze the text using OpenAI GPT-4 with a specific prompt in chat completions
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-4-turbo-2024-04-09",
             messages=[{"role": "system", "content": msg},
-                      {"role": "user", "content": text}]
+                      {"role": "user", "content": text}],
+            max_tokens = 50
         )
         return jsonify({"response": response.choices[0].message['content']})
     except Exception as e:
@@ -79,5 +79,14 @@ def extract_text_from_docx(file):
         text += para.text + '\n'
     return text
 
+def optimize_text(text):
+
+    parts = text.split("14. APROVAÇÕES", 1)
+    if len(parts) > 1:
+        print(parts[0])
+        return parts[0]
+    else:
+        return text
+    
 if __name__ == '__main__':
     app.run(debug=True)
