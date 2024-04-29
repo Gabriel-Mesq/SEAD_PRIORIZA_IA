@@ -6,14 +6,18 @@
 
 {% block content %}
 
-<h1>Envie um documento para análise</h1>
-<p>Formatos aceitos: .pdf, .docx</p>
-<form id="uploadForm" enctype="multipart/form-data">
-    <label for="fileInput">Selecione um arquivo:</label>
-    <input type="file" id="fileInput" name="file" required accept=".pdf, .docx">
-    <button type="submit">Enviar e Analisar</button>
-</form>
-<div id="fileResponseArea"></div>
+<div style="text-align: center;">
+    <h1>Envie um documento para análise</h1>
+    <p>Formatos aceitos: .pdf, .docx</p>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="fileInput">Selecione um arquivo:</label><br>
+        <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
+        <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
+    </form><br>
+    <div id="fileResponseArea"></div>
+</div>
+
+
 
 <script>
     document.getElementById('uploadForm').onsubmit = async function(event) {
