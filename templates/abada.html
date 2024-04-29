@@ -15,9 +15,9 @@
         <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
     </form><br>
     <div id="fileResponseArea"></div>
+    <button id="explainButton" style="display:none; background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;" onclick="requestExplanation()">Obter Explicação</button>
+    <div id="explanationArea" style="margin-top: 20px;"></div>
 </div>
-
-
 
 <script>
     document.getElementById('uploadForm').onsubmit = async function(event) {
@@ -31,12 +31,26 @@
             body: formData
         });
         const data = await response.json();
-        if (data.response) {
-            document.getElementById('fileResponseArea').innerText = data.response;
+        if (data.category) {
+            document.getElementById('fileResponseArea').innerText = 'Categoria: ' + data.category;
+            document.getElementById('explainButton').style.display = 'inline-block'; // Show the explain button
         } else {
             document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
         }
     };
+
+    async function requestExplanation() {
+        const categoryText = document.getElementById('fileResponseArea').innerText.split('Categoria: ')[1];
+        const response = await fetch('/explain', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({text: categoryText})
+        });
+        const data = await response.json();
+        document.getElementById('explanationArea').innerText = 'Explicação: ' + data.explanation;
+    }
 </script>
 
 {% endblock %}

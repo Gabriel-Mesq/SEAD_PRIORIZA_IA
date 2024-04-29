@@ -10,12 +10,10 @@ app.template_folder = os.path.abspath('templates')
 # Configure OpenAI API
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Define a route to render the HTML template
 @app.route('/')
 def index():
     return render_template('abada.html')
 
-# Route to handle file uploads and process them
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -35,6 +33,7 @@ def upload_file():
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
+        # Specific prompt for categorizing the document
         msg = """
             Olhando as TAP's (Termo de Abertura de Projeto) que foram enviadas, preciso que você analise os documentos, e, utilizando as informações disponíveis, focando em JUSTIFICATIVA e OBJETIVOS. Categorize-as individualmente com alguma dessas possíveis categorias: Cidadões, Servidores, Orgãos e Entidades publicas.
 
@@ -49,20 +48,35 @@ def upload_file():
 
             Na primeira linha, retorne apenas a categoria da TAP, nas linhas seguintes, explique a justificativa. 
             """
-
-        # Analyze the text using OpenAI GPT-4 with a specific prompt in chat completions
+       
         response = openai.ChatCompletion.create(
             model="gpt-4-turbo-2024-04-09",
             messages=[{"role": "system", "content": msg},
                       {"role": "user", "content": text}],
-            max_tokens = 50
+            max_tokens=50
         )
-        return jsonify({"response": response.choices[0].message['content']})
+        category = response.choices[0].message['content']
+        return jsonify({"category": category})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/explain', methods=['POST'])
+def explain_category():
+    data = request.get_json()
+    category = data['text']
+
+    # Generate an explanation based on the category
+    explanation_prompt = f"Please explain why the following category was chosen: {category}"
+   
+    response = openai.ChatCompletion.create(
+        model="gpt-4-turbo-2024-04-09",
+        messages=[{"role": "system", "content": explanation_prompt}],
+        max_tokens=150
+    )
+    explanation = response.choices[0].message['content']
+    return jsonify({"explanation": explanation})
+
 def extract_text_from_pdf(file):
-    # Read the stream into a bytes object and open the PDF from bytes
     file_content = file.read()
     doc = fitz.open("pdf", file_content)
     text = ""
@@ -72,7 +86,6 @@ def extract_text_from_pdf(file):
     return text
 
 def extract_text_from_docx(file):
-    # Ensure the file stream is at the beginning and load the DOCX file
     doc = Document(file)
     text = ""
     for para in doc.paragraphs:
@@ -80,13 +93,11 @@ def extract_text_from_docx(file):
     return text
 
 def optimize_text(text):
-
     parts = text.split("14. APROVAÇÕES", 1)
     if len(parts) > 1:
-        print(parts[0])
         return parts[0]
     else:
         return text
-    
+
 if __name__ == '__main__':
     app.run(debug=True)
