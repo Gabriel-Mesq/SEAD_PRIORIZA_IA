@@ -77,7 +77,7 @@ def explain_category():
         'Órgãos e Entidades Públicas': 'government_buildings.png'
     }
 
-    explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}"
+    explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}. Retorne a resposta em formato HTML, com as devidas tags."
    
     response = openai.ChatCompletion.create(
         model="gpt-4-turbo-2024-04-09",
@@ -85,8 +85,9 @@ def explain_category():
                   {"role": "user", "content": session['document_text']}],
         #max_tokens=150
     )
-    explanation = response.choices[0]. message['content']
+    explanation = response.choices[0].message['content']
     image_url = url_for('static', filename=category_images.get(category, 'default_image.jpg'))
+    print(explanation)
     return render_template('explanation.html', explanation=explanation, image_url=image_url)
 
 def extract_text_from_pdf(file):
@@ -113,4 +114,4 @@ def optimize_text(text):
         return text
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port="80", debug=True)
