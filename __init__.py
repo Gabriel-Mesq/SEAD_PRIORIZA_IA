@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, jsonify, session, url_for
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
+from waitress import serve
 
 app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
@@ -117,3 +118,4 @@ def optimize_text(text):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    #serve(app, host='0.0.0.0', port=5000)
