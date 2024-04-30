@@ -77,7 +77,7 @@ def explain_category():
         'Órgãos e Entidades Públicas': 'government_buildings.png'
     }
 
-    explanation_prompt = f"Por favor, explique o porque desta categoria ter sido escolhida: {category}"
+    explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}"
    
     response = openai.ChatCompletion.create(
         model="gpt-4-turbo-2024-04-09",
