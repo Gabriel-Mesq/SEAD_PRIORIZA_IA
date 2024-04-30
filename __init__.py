@@ -1,11 +1,12 @@
 import os
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, session, url_for
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 
 app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
+app.secret_key = os.urandom(24)  # Generates a random key, set to a fixed value for production
 
 # Configure OpenAI API
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -33,6 +34,8 @@ def upload_file():
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
+        session['document_text'] = text  # Store text in session
+
         # Specific prompt for categorizing the document
         msg = """
             Olhando as TAP's (Termo de Abertura de Projeto) que foram enviadas, preciso que você analise os documentos, e, utilizando as informações disponíveis, focando em JUSTIFICATIVA e OBJETIVOS. Categorize-as individualmente com alguma dessas possíveis categorias: Cidadões, Servidores, Orgãos e Entidades publicas.
@@ -46,7 +49,7 @@ def upload_file():
             Operacional - Órgãos e Entidades Públicas: Concluimos a pesquisa e análise das boas práticas em gestão para criação do modelo de maturidade. KR 1 - Identificamos aspectos que validam uma boa maturidade na área de logística e documental. KR2 - Identificamos os aspectos que validam uma boa maturidade na área de Compras. KR 3 - Identificamos aspectos que validam uma boa maturidade na área de Patrimônio Imobiliário. KR 4 - Identificamos aspectos que validam uma boa maturidade na área de Patrimônio Mobiliário. 
             Ou seja, projetos que buscam melhorar as práticas de gestão e eficiência administrativa em uma escala organizacional mais ampla. Notavelmente melhorias de envolvendo a gestão pública. Difusão de cultura sempre será Órgãos e Entidades Públicas.
 
-            Na primeira linha, retorne apenas a categoria da TAP, nas linhas seguintes, explique a justificativa. 
+            Na primeira linha, retorne apenas a categoria da TAP. 
             """
        
         response = openai.ChatCompletion.create(
@@ -62,19 +65,29 @@ def upload_file():
 
 @app.route('/explain', methods=['POST'])
 def explain_category():
-    data = request.get_json()
-    category = data['text']
+    category = request.form['text']
 
-    # Generate an explanation based on the category
-    explanation_prompt = f"Please explain why the following category was chosen: {category}"
+    if 'document_text' not in session:
+        return "Document text not available", 404
+
+    # Map categories to their respective images
+    category_images = {
+        'Servidores': 'public_workers.jpeg',
+        'Cidadãos': 'citizens.png',
+        'Órgãos e Entidades Públicas': 'government_buildings.png'
+    }
+
+    explanation_prompt = f"Por favor, explique o porque desta categoria ter sido escolhida: {category}"
    
     response = openai.ChatCompletion.create(
         model="gpt-4-turbo-2024-04-09",
-        messages=[{"role": "system", "content": explanation_prompt}],
-        max_tokens=150
+        messages=[{"role": "system", "content": explanation_prompt},
+                  {"role": "user", "content": session['document_text']}],
+        #max_tokens=150
     )
-    explanation = response.choices[0].message['content']
-    return jsonify({"explanation": explanation})
+    explanation = response.choices[0]. message['content']
+    image_url = url_for('static', filename=category_images.get(category, 'default_image.jpg'))
+    return render_template('explanation.html', explanation=explanation, image_url=image_url)
 
 def extract_text_from_pdf(file):
     file_content = file.read()

@@ -1,0 +1,23 @@
+{% extends 'header.html' %}
+
+{% block title %}Explanation{% endblock %}
+
+{% block header %}SEAD AI{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: center; padding: 20px;">
+
+    <!-- Image Container with Border -->
+    <div style="flex: 1; max-width: 50%; padding: 10px; border: 2px solid #008CBA; box-shadow: 0 0 10px rgba(0, 140, 186, 0.5); border-radius: 10px; overflow: hidden;">
+        <img src="{{ image_url }}" alt="Category Image" style="width: 100%; height: auto; max-width: 600px;">
+    </div>
+
+    <!-- Text Container with Border -->
+    <div style="flex: 1; max-width: 50%; padding: 20px; border: 2px solid #008CBA; box-shadow: 0 0 10px rgba(0, 140, 186, 0.5); border-radius: 10px; margin-left: 20px;">
+        <h1>Explicação da categoria</h1>
+        <p>{{ explanation }}</p>
+        <a href="/" style="display: inline-block; background-color: #008CBA; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;">Voltar ao início</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -21,6 +21,24 @@
         header {
             font-family: 'Anton', sans-serif; /* Apply the 'Roboto' font to the header */
         }
+        main {
+            margin-bottom: 100px; /* Adjust this value as needed to provide enough space for the footer */
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 20px 0; /* Adjust padding as needed */
+            text-align: center;
+        }
+        .footer-content {
+            margin-top: 20px;
+        }
+        .contact-links a {
+
+            margin: 0 10px;
+            font-size: 20px;
+        }
     </style>
     
 </head>
@@ -53,7 +71,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="mt-4">
+    <footer>
         <div class="footer-content">
             <p>&copy; 2024 Miku Stans Corp. All rights reserved.</p>
             <div class="contact-links">

@@ -15,8 +15,12 @@
         <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
     </form><br>
     <div id="fileResponseArea"></div>
-    <button id="explainButton" style="display:none; background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;" onclick="requestExplanation()">Obter Explicação</button>
-    <div id="explanationArea" style="margin-top: 20px;"></div>
+
+    <!-- Hidden form to handle explanation request -->
+    <form id="explanationForm" action="/explain" method="post" style="display:none;">
+        <input type="hidden" name="text" id="categoryText">
+        <button id="explainButton" style="background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Obter Explicação</button>
+    </form>
 </div>
 
 <script>
@@ -34,23 +38,17 @@
         if (data.category) {
             document.getElementById('fileResponseArea').innerText = 'Categoria: ' + data.category;
             document.getElementById('explainButton').style.display = 'inline-block'; // Show the explain button
+            document.getElementById('explanationForm').style.display = 'block'; // Show the form for explanations
         } else {
             document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
         }
     };
 
-    async function requestExplanation() {
+    document.getElementById('explainButton').onclick = function() {
         const categoryText = document.getElementById('fileResponseArea').innerText.split('Categoria: ')[1];
-        const response = await fetch('/explain', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({text: categoryText})
-        });
-        const data = await response.json();
-        document.getElementById('explanationArea').innerText = 'Explicação: ' + data.explanation;
-    }
+        document.getElementById('categoryText').value = categoryText;  // Set the hidden input value
+        document.getElementById('explanationForm').submit();  // Submit the form
+    };
 </script>
 
 {% endblock %}
