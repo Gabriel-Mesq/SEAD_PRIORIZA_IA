@@ -14,7 +14,7 @@
         <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
         <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
     </form><br>
-    <div id="fileResponseArea"></div>
+    <div id="fileResponseArea" style="margin-bottom: 20px; font-size: 22px;"></div>
 
     <!-- Hidden form to handle explanation request -->
     <form id="explanationForm" action="/explain" method="post" style="display:none;">
@@ -22,6 +22,8 @@
         <button id="explainButton" style="background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Obter Explicação</button>
     </form>
 </div>
+
+
 
 <script>
     document.getElementById('uploadForm').onsubmit = async function(event) {
