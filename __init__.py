@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, jsonify, session, url_for
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
+from waitress import serve
 
 app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
@@ -25,10 +26,10 @@ def upload_file():
 
     try:
         text = ""
-        if file.filename.endswith('.pdf'):
+        if file.filename.lower().endswith('.pdf'):
             file.seek(0)  # Ensure the stream is at the start
             text = optimize_text(extract_text_from_pdf(file))
-        elif file.filename.endswith('.docx'):
+        elif file.filename.lower().endswith('.docx'):
             file.seek(0)  # Ensure the stream is at the start
             text = optimize_text(extract_text_from_docx(file))
         else:
@@ -77,7 +78,7 @@ def explain_category():
         'Órgãos e Entidades Públicas': 'government_buildings.png'
     }
 
-    explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}. Retorne a resposta em formato HTML, com as devidas tags."
+    explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}. Evite passar de 250 palavras. Retorne a resposta em formato HTML, com as devidas tags."
    
     response = openai.ChatCompletion.create(
         model="gpt-4-turbo-2024-04-09",
@@ -86,8 +87,10 @@ def explain_category():
         #max_tokens=150
     )
     explanation = response.choices[0].message['content']
+    if explanation.startswith("```html"):
+        explanation = explanation[7:-3]
+
     image_url = url_for('static', filename=category_images.get(category, 'default_image.jpg'))
-    print(explanation)
     return render_template('explanation.html', explanation=explanation, image_url=image_url)
 
 def extract_text_from_pdf(file):
@@ -114,4 +117,5 @@ def optimize_text(text):
         return text
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port="80", debug=True)
+    app.run(debug=True)
+    #serve(app, host='0.0.0.0', port=5000)
