@@ -16,6 +16,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def index():
     return render_template('home.html')
 
+@app.route('/revisar')
+def index():
+    return render_template('revisar.html')
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -54,7 +58,7 @@ def upload_file():
             """
        
         response = openai.ChatCompletion.create(
-            model="gpt-4-turbo-2024-04-09",
+            model="gpt-4o",
             messages=[{"role": "system", "content": msg},
                       {"role": "user", "content": text}],
             max_tokens=50
@@ -81,7 +85,7 @@ def explain_category():
     explanation_prompt = f"Explique de forma objetiva e direta ao ponto, elencando elementos presentes dentro da TAP, o porque desta categoria ter sido escolhida: {category}. Evite passar de 250 palavras. Retorne a resposta em formato HTML, com as devidas tags."
    
     response = openai.ChatCompletion.create(
-        model="gpt-4-turbo-2024-04-09",
+        model="gpt-4o",
         messages=[{"role": "system", "content": explanation_prompt},
                   {"role": "user", "content": session['document_text']}],
         #max_tokens=150
@@ -117,5 +121,5 @@ def optimize_text(text):
         return text
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    serve(app, host='0.0.0.0', port=5000)
+    app.run(debug=True)
+    #serve(app, host='0.0.0.0', port=5000)
