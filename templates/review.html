@@ -1,0 +1,50 @@
+{% extends 'header.html' %}
+
+{% block title %}SEAD AI - Revisão de Documento{% endblock %}
+
+{% block header %}SEAD AI - Revisão de Documento{% endblock %}
+
+{% block content %}
+
+<div id="titulo" style="text-align: center;">
+    <h1>
+        <span style="color: RGB(255, 204, 0);">SEAD AI:</span> Revisão de Documentos
+    </h1>
+    </br>
+    <h3>Use esta ferramenta para revisar e obter um resumo detalhado dos documentos enviados.</h3>      
+</div>
+</br></br></br></br>
+<div style="display: flex; align-items: center; justify-content: center;">
+    
+    <div style="text-align: center;">
+        <h1>Envie um documento para revisão</h1>
+        <p>Formatos aceitos: .pdf, .docx</p>
+        <form id="reviewForm" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
+            <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Revisar</button>
+        </form><br>
+        <div id="reviewResponseArea" style="margin-bottom: 20px; font-size: 22px;"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('reviewForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('file', document.getElementById('fileInput').files[0]);
+        document.getElementById('reviewResponseArea').innerHTML = '<p>Enviando e revisando o documento...</p>';
+       
+        const response = await fetch('/review', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.review_summary) {
+            document.getElementById('reviewResponseArea').innerHTML = data.review_summary;
+        } else {
+            document.getElementById('reviewResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
+        }
+    };
+</script>
+
+{% endblock %}

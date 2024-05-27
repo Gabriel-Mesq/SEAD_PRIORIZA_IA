@@ -1,9 +1,13 @@
 import os
-from flask import Flask, request, render_template, jsonify, session, url_for
+from flask import Flask, request, render_template, jsonify, session, url_for, redirect
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 from waitress import serve
+import uuid
+
+def generate_unique_filename(prefix):
+    return f"{prefix}_{uuid.uuid4().hex}.txt"
 
 app = Flask(__name__)
 app.template_folder = os.path.abspath('templates')
@@ -17,8 +21,16 @@ def index():
     return render_template('home.html')
 
 @app.route('/revisar')
-def index():
-    return render_template('revisar.html')
+def review():
+    return render_template('review.html')
+
+@app.route('/categorizar')
+def categorize():
+    return render_template('home.html')
+
+@app.route('/ranquear')
+def rank():
+    return render_template('rank.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -67,6 +79,49 @@ def upload_file():
         return jsonify({"category": category})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/review', methods=['POST'])
+def review_document():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    try:
+        text_review = ""
+        if file.filename.lower().endswith('.pdf'):
+            file.seek(0)  # Ensure the stream is at the start
+            text_review = extract_text_from_pdf(file)  # Extract text
+        elif file.filename.lower().endswith('.docx'):
+            file.seek(0)  # Ensure the stream is at the start
+            text_review = extract_text_from_docx(file)  # Extract text
+        else:
+            return jsonify({"error": "Unsupported file format"}), 400
+
+        review_prompt = """
+            Revise o documento enviado e retorne APENAS um curto resumo. Caso existam, aponte as devidas correções ortográficas, e caso informações importantes como beneficiário, justificativa e objetivo não estejam claros, recomende alterações. Evite passar de 250 palavras. Retorne a resposta em formato HTML, com as devidas tags.
+        """
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": review_prompt},
+                {"role": "user", "content": text_review}
+            ],
+            #max_tokens=300,  # Ensure the response is limited in length
+            temperature=0.7  # Adjust temperature if needed
+        )
+
+        review_summary = response.choices[0].message['content']
+
+        return jsonify({"review_summary": review_summary})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
 
 @app.route('/explain', methods=['POST'])
 def explain_category():
