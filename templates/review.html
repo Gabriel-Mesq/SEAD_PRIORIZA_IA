@@ -15,7 +15,7 @@
 </div>
 </br></br></br></br>
 <div style="display: flex; align-items: center; justify-content: center;">
-    
+    <img src="{{ url_for('static', filename='review.png') }}" alt="Análise de Documentos" style="margin-right: 40px; width: auto; height: 400px;">
     <div style="text-align: center;">
         <h1>Envie um documento para revisão</h1>
         <p>Formatos aceitos: .pdf, .docx</p>
@@ -23,9 +23,32 @@
             <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
             <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Revisar</button>
         </form><br>
-        <div id="reviewResponseArea" style="margin-bottom: 20px; font-size: 22px;"></div>
+        <div id="reviewResponseArea" style="margin-bottom: 20px; font-size: 22px; padding: 20px; border: 2px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"></div>
+        <button id="viewResultButton" style="display: none; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; margin-top: 20px;" data-toggle="modal" data-target="#reviewModal">Ver Resultado</button>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="max-width: 80%; height: 90%; margin: auto;">
+      <div class="modal-content" style="height: 100%;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reviewModalLabel">Resumo da Revisão</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modalReviewContent" style="color: black; font-size: 24px; overflow-y: auto;">
+          <!-- The review summary will be displayed here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <a href="/download_review" class="btn btn-primary">Baixar como PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
 <script>
     document.getElementById('reviewForm').onsubmit = async function(event) {
@@ -33,14 +56,17 @@
         const formData = new FormData();
         formData.append('file', document.getElementById('fileInput').files[0]);
         document.getElementById('reviewResponseArea').innerHTML = '<p>Enviando e revisando o documento...</p>';
-       
+        document.getElementById('viewResultButton').style.display = 'none';
+
         const response = await fetch('/review', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
         if (data.review_summary) {
-            document.getElementById('reviewResponseArea').innerHTML = data.review_summary;
+            document.getElementById('reviewResponseArea').innerHTML = '<p>Revisão concluída!</p>';
+            document.getElementById('modalReviewContent').innerHTML = data.review_summary;
+            document.getElementById('viewResultButton').style.display = 'block';
         } else {
             document.getElementById('reviewResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
         }
