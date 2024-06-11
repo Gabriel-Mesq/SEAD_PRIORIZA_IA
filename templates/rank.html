@@ -6,13 +6,56 @@
 
 {% block content %}
 
-
+<div id="titulo" style="text-align: center;">
+    <h1>
+        <span style="color: RGB(255, 204, 0);">SEAD AI:</span> Ranking de pontuação de TAPs
+    </h1>
+    </br>
+    <h3></h3>      
+</div>
 </br></br></br></br>
 <div style="display: flex; align-items: center; justify-content: center;">
-    <img src="{{ url_for('static', filename='construcao.png') }}" alt="Análise de Documentos" style="margin-right: 40px; width: 1200px; height: 500px;">
-   
+    <img src="{{ url_for('static', filename='robo.png') }}" alt="Análise de Documentos" style="margin-right: 40px; width: auto; height: 300px;">
+    <div style="text-align: center;">
+        <h1>Envie um documento para análise</h1>
+        <p>Formatos aceitos: .pdf, .docx</p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <!-- <label for="fileInput">Selecione um arquivo:</label><br>-->
+            <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
+            <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
+        </form><br>
+        <div id="fileResponseArea" style="margin-bottom: 20px; font-size: 22px;"></div>
+
+        
+    </div>
 </div>
 
+<script>
+    document.getElementById('uploadForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('file', document.getElementById('fileInput').files[0]);
+        document.getElementById('fileResponseArea').innerHTML = '<p>Enviando e analisando o documento...</p>';
+       
+        const response = await fetch('/ranking', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.category) {
+            document.getElementById('fileResponseArea').innerText = 'Categoria: ' + data.category;
+            document.getElementById('explainButton').style.display = 'inline-block'; 
+            document.getElementById('explanationForm').style.display = 'block'; 
+        } else {
+            document.getElementById('fileResponseArea').innerText = 'Error: ' + (data.error ? data.error : 'Erro ao processar arquivo.');
+        }
+    };
 
+    document.getElementById('explainButton').onclick = function() {
+        const categoryText = document.getElementById('fileResponseArea').innerText.split('Categoria: ')[1];
+        document.getElementById('categoryText').value = categoryText;  // Set the hidden input value
+        document.getElementById('explanationForm').submit();  // Submit the form
+    };
+</script>
 
 {% endblock %}
