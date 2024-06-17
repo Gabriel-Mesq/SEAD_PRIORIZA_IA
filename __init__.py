@@ -69,20 +69,9 @@ def upload_file():
         session['document_text'] = text  # Store text in session
 
         # Specific prompt for categorizing the document
-        msg = """
-            Olhando as TAP's (Termo de Abertura de Projeto) que foram enviadas, preciso que você analise os documentos, e, utilizando as informações disponíveis, focando em JUSTIFICATIVA e OBJETIVOS. Categorize-as individualmente com alguma dessas possíveis categorias: Cidadões, Servidores, Orgãos e Entidades publicas.
-
-            Objetivo Operacional - Servidores: Definimos e aplicamos uma metodologia para medição da satisfação dos servidores. KR 1 - Aplicamos a metodologia em 38 órgãos do estado. KR 2 - Obtivemos 90% De respostas ao questionário. KR 3 - Consolidamos os resultados da pesquisa. 
-            Ou seja, Iniciativas que visam aprimorar a experiência ou capacidade dos funcionários públicos. 
-
-            Objetivo Operacional - Cidadãos: Avançamos na digitalização dos serviços públicos para transformarmos a qualidade de vida dos cidadãos. KR 1 - Realizamos a estruturação das equipes para inicialização das transformações dos serviços públicos. CANCELADO - KR 2 - Pactuamos um acordo com a SGG para saneamento dos fatores para melhoria dos serviços digitais. KR 3 - Pactuamos um acordo com o DETRAN para saneamento dos fatores para melhoria dos serviços digitais. KR 4 - Implementamos as ações necessárias para melhoria do serviço de emissão da Carteira de Identidade Nacional - CIN. KR 5 - Iniciamos o aumento do percentual de avaliação dos canais digitais. KR 6 - Iniciamos a Execução do plano de transformação. 
-            Ou seja, projetos focados em melhorar diretamente a vida dos cidadãos através de serviços ou benefícios. Objetivo 
-
-            Operacional - Órgãos e Entidades Públicas: Concluimos a pesquisa e análise das boas práticas em gestão para criação do modelo de maturidade. KR 1 - Identificamos aspectos que validam uma boa maturidade na área de logística e documental. KR2 - Identificamos os aspectos que validam uma boa maturidade na área de Compras. KR 3 - Identificamos aspectos que validam uma boa maturidade na área de Patrimônio Imobiliário. KR 4 - Identificamos aspectos que validam uma boa maturidade na área de Patrimônio Mobiliário. 
-            Ou seja, projetos que buscam melhorar as práticas de gestão e eficiência administrativa em uma escala organizacional mais ampla. Notavelmente melhorias de envolvendo a gestão pública. Difusão de cultura sempre será Órgãos e Entidades Públicas.
-
-            Na primeira linha, retorne apenas a categoria da TAP. 
-            """
+        with open('prompts/tap_category.txt', 'r') as file:
+            msg = file.read()
+        # leia o arquivo txt
        
         response = openai.ChatCompletion.create(
             model="gpt-4-turbo",
@@ -117,87 +106,9 @@ def review_document():
         
         session['document_review'] = text_review
 
-        review_prompt = """
-            Revise o texto enviado, sendo desnecessário resumir o conteúdo. Verifique com atenção informações importantes como beneficiário, justificativa e objetivo, caso estas informações não estejam claras ou estejam incompletas, recomende alterações. Este é um exemplo de como uma TAP deve ser estruturada corretamente, faça a análise com base nesta estrutura:
-             
-            1. IDENTIFICAÇÃO
-            NOME DO PROJETO	[Nome do projeto]
-            UNIDADE RESPONSÁVEL	[Nome órgão/entidade/unidade responsável – SIGLA]
-GERENTE DO PROJETO	[Nome do gerente do projeto]
-2. ALINHAMENTO ESTRATÉGICO
-[Ex.: Plano de Governo, Meta GEPI, Plano Estratégico do órgão/entidade, PPA (Produto, Programa, Ação)]
-3. PROGRAMA VINCULADO
-
-4. JUSTIFICATIVA
-[Por que o projeto deve ser feito? Quais os problemas que existem que justificam a existência do projeto?]
-Qual é a motivação para a realização do projeto, por que ele deve ser desenvolvido? A justificativa deve demonstrar uma ação de mudança, onde saímos de uma determinada situação antes da execução do projeto para um novo cenário após sua realização. Um projeto pode ser justificado por diversas razões, mas de forma geral pode-se identificar duas possibilidades, ou é criado para resolver um problema ou para aproveitar/potencializar uma oportunidade.  Neste tópico, elementos como estudos, alinhamento estratégico e/ou político, viabilidade técnica e/ou econômica, contexto de negócio e/ou oportunidade, embasamentos científicos, indicadores, percepção do público-alvo etc. podem ser detalhadas e apresentadas. Em síntese, devem ser apontados os elementos que validam sua execução.
-5. ESCOPO DO PROJETO
-5.1. OBJETIVOS
-[O que será executado/realizado neste projeto? O que se pretende obter com este projeto?]
-Escreva os objetivos de uma maneira SMART, ou seja, que possa ser facilmente medido ou identificado.
-S.M.A.R.T. (Specific, Measurable, Attainable, Realistic, Time Based)
-Específico
-Mensurável (tem indicador)
-Atingível
-Realista
-Quando? (tem base de tempo)
-5.2. PÚBLICO-ALVO
-[Qual o público que será beneficiado ou atingido pelas ações/objetivos do projeto?]
-5.3. BENEFÍCIOS ESPERADOS
-[São os resultados associados aos objetivos do projeto]
-O que vai ser entregue quando o projeto for concluído? Eles podem ser tangíveis ou intangíveis, diretos ou indiretos. Inclusive eles podem ser insumos para outras iniciativas futuras.
-5.4. EXCLUSÕES (NÃO ESCOPO)
-[O que este projeto não inclui? O que não será feito neste projeto, mas que tange os objetivos?]
-As exclusões de um projeto são todos os requisitos que estão explicitamente fora do escopo do projeto. Declarar explicitamente o que está fora do escopo do projeto ajuda no gerenciamento das expectativas das partes interessadas
-6. PREMISSAS
-[Fatores que são consideradas como verdadeiros, reais ou certos sem prova ou demonstração. Em tese, toda premissa possui um risco associado]
-Escreva aqui os fatores ou situações que você irá considerar como certas ou verdadeiras, apenas para fins de planejamento. Exemplo: Para iniciar a obra de reforma do telhado. Consideramos que no centro-oeste não chove no mês de julho. Consideramos a queda sazonal dos preços de materiais de construção.
-7. RESTRIÇÕES
-[Limites que já são conhecidos, que impactarão no projeto. A exemplo, restrições de prazo, orçamento, pessoas etc.]
-8. CRITÉRIOS DE ACEITAÇÃO
-[Condições para que as entregas do projeto sejam aceitas]
-São aqueles critérios, incluindo requisitos de desempenho e as condições essenciais, que devem ser atendidas antes das entregas do projeto serem aceitas. Eles determinam as circunstâncias específicas sob as quais o resultado do projeto será aceito.
-9. RISCOS
-[Tudo o que for identificado e que pode impactar diretamente na execução ou andamento do projeto tanto positivamente quanto negativamente para toda de ações caso necessário]
-10. CRONOGRAMA DE ENTREGAS MACRO
-[Essas entregas macros estão associadas às entregas do projeto. Pode ser utilizado data de início e de fim de cada entrega macro entrega]
-Marcos/Entregas	Responsável	Início Previsto	Término Previsto	Custo
-				
-				
-				
-				
-				
-11. CUSTO TOTAL ESTIMADO DO PROJETO
-
-12. IDENTIFICAÇÃO DAS PARTES ENVOLVIDAS NO PROJETO
-12.1 PARTES INTERESSADAS
-[Pessoas, Órgãos /Entidades, Parceiros que não tenham tarefas no projeto]
-12.2 EQUIPE DO PROJETO
-[Pessoas que tem atividades/responsabilidades de execução no projeto]
-Nome	 Órgão/Unidade
-	
-	
-13. INDICADORES DE RESULTADO
-Indicador	 Valor Inicial	 Data Ref. Inicial	 Valor Final	Data Ref. Final
-				
-				
-14. APROVAÇÕES
-[Considerando o planejamento aprovado, os responsáveis abaixo assinam e concordam com o conteúdo apresentado neste documento para início da execução do projeto]
-
-
-
-[Assinatura do Gerente do Projeto]
-
-
-
-[Assinatura do Patrocinador (dirigente do órgão/entidade)]
-
-
-
-
-               
-             Além disso, caso existam, aponte as devidas correções ortográficas (Com exceção de nomes proprios). Evite passar de 250 palavras. Caso não hajam erros e tudo esteja claro, basta retornar uma mensagem aprovando a qualidade. Retorne a sua resposta em formato HTML, com as devidas tags.
-        """  
+        with open('prompts/review.txt', 'r', encoding='latin1') as file:
+            review_prompt = file.read()
+        # leia o arquivo txt
              
         response = openai.ChatCompletion.create(
             model="gpt-4-turbo",
@@ -349,38 +260,63 @@ def explain_category():
 def rank_file():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
-    file = request.files['file']
-    if file.filename == '':
+    uploaded_file = request.files['file']
+    if uploaded_file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
     try:
         text_rank = ""
-        if file.filename.lower().endswith('.pdf'):
-            file.seek(0)  # Ensure the stream is at the start
-            text_rank = optimize_text(extract_text_from_pdf(file))
-        elif file.filename.lower().endswith('.docx'):
-            file.seek(0)  # Ensure the stream is at the start
-            text_rank = optimize_text(extract_text_from_docx(file))
+        if uploaded_file.filename.lower().endswith('.pdf'):
+            uploaded_file.seek(0)  # Ensure the stream is at the start
+            text_rank = optimize_text(extract_text_from_pdf(uploaded_file))
+        elif uploaded_file.filename.lower().endswith('.docx'):
+            uploaded_file.seek(0)  # Ensure the stream is at the start
+            text_rank = optimize_text(extract_text_from_docx(uploaded_file))
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
         session['document_text'] = text_rank  # Store text in session
 
         # Specific prompt for categorizing the document
-        with open('prompts/ranking.txt', 'r') as file:
-            msg = file.read()
-        # leia o arquivo txt
+        with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
+            msg = prompt_file.read()
 
+        # Call to GPT-4 API
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": msg},
                       {"role": "user", "content": text_rank}],
-           #max_tokens=500
         )
-        category = response.choices[0].message['content']
-        return jsonify({"category": category})
+        score_text = response.choices[0].message['content']
+        
+        print(score_text)
+        # Extract score from the response using GPT-4
+        score_extraction_response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": "Extraia a pontuação geral deste documento. Retorne apenas o numero da pontuação."},
+                      {"role": "user", "content": score_text}],
+        )
+        score = score_extraction_response.choices[0].message['content'].strip()
+
+        # Save the score and document name in the session
+        if 'document_scores' not in session:
+            session['document_scores'] = []
+        session['document_scores'].append({'document': uploaded_file.filename, 'score': float(score)})
+
+        return jsonify({"score": score})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/display_rankings', methods=['GET'])
+def display_rankings():
+    if 'document_scores' not in session or not session['document_scores']:
+        return jsonify({"error": "No document scores available"}), 400
+
+    # Sort documents by score in descending order
+    sorted_documents = sorted(session['document_scores'], key=lambda x: x['score'], reverse=True)
+
+    return render_template('ranking_display.html', documents=sorted_documents)
 
 def extract_text_from_pdf(file):
     file_content = file.read()

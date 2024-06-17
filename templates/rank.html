@@ -42,8 +42,8 @@
             body: formData
         });
         const data = await response.json();
-        if (data.category) {
-            document.getElementById('fileResponseArea').innerText = 'Categoria: ' + data.category;
+        if (data.score) {
+            document.getElementById('fileResponseArea').innerText = 'Pontuação: ' + data.score;
             document.getElementById('explainButton').style.display = 'inline-block'; 
             document.getElementById('explanationForm').style.display = 'block'; 
         } else {

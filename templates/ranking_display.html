@@ -1,0 +1,42 @@
+{% extends 'header.html' %}
+
+{% block title %}SEAD AI{% endblock %}
+
+{% block header %}SEAD AI{% endblock %}
+
+{% block content %}
+
+<div id="titulo" style="text-align: center;">
+    <h1>
+        <span style="color: RGB(255, 204, 0);">SEAD AI:</span> Ranking de pontuação de TAPs
+    </h1>
+    </br>
+    <h1>Tabela de TAPs</h1>
+    <h3></h3>      
+</div>
+</br></br></br>
+
+<div style="display: flex; align-items: center; justify-content: center;">
+    <table class="table table-bordered" style="color: white;"> 
+        <thead>
+            <tr>
+                <th>Documento</th>
+                <th>Pontuação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td>{{ doc.document }}</td>
+                <td>{{ doc.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    
+</script>
+
+{% endblock %}

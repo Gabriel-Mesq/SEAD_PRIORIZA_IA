@@ -1,5 +1,4 @@
-"""
-            Sua missão é me auxiliar na elaboração de um priorizador de projetos, conforme o PMBoK 7. 
+           Sua missão é me auxiliar na elaboração de um priorizador de projetos, conforme o PMBoK 7. 
             Esses portifólio de projetos faz parte dos projetos da Secretaria de Estado de Administração - SEAD. 
             O objetivo é que ao final você seja capaz de após eu te informar sobre vários documentos como planejamento estratégico, plano de governo, 
             regimento interno da SEAD e outros documentos que forem necessários, você conheça sobre quais são os objetivos estratégicos da SEAD e consiga ler documentos de uma TAP, 
@@ -43,4 +42,3 @@ Agora vamos passar para uma nova fase do nosso trabalho.
 gerar uma pontuação para cada critérios com seus pesos e ao final dar uma pontuação total de Critérios SEAD, Critérios SGG e Pontuação Total.
 Na sua resposta, retorne apenas a pontuação. 
             
-"""
