@@ -1,3 +1,5 @@
+flask_session/
+
 secrets_Abada.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
