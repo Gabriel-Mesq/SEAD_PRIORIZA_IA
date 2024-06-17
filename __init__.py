@@ -13,6 +13,8 @@ from reportlab.lib.utils import simpleSplit
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from flask_session import Session
 
+from nonsense.ranking.rank_file import ranking
+
 def generate_unique_filename(prefix):
     return f"{prefix}_{uuid.uuid4().hex}.txt"
 
@@ -258,55 +260,7 @@ def explain_category():
 
 @app.route('/ranking', methods=['POST'])
 def rank_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
-    uploaded_file = request.files['file']
-    if uploaded_file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-
-    try:
-        text_rank = ""
-        if uploaded_file.filename.lower().endswith('.pdf'):
-            uploaded_file.seek(0)  # Ensure the stream is at the start
-            text_rank = optimize_text(extract_text_from_pdf(uploaded_file))
-        elif uploaded_file.filename.lower().endswith('.docx'):
-            uploaded_file.seek(0)  # Ensure the stream is at the start
-            text_rank = optimize_text(extract_text_from_docx(uploaded_file))
-        else:
-            return jsonify({"error": "Unsupported file format"}), 400
-
-        session['document_text'] = text_rank  # Store text in session
-
-        # Specific prompt for categorizing the document
-        with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
-            msg = prompt_file.read()
-
-        # Call to GPT-4 API
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": msg},
-                      {"role": "user", "content": text_rank}],
-        )
-        score_text = response.choices[0].message['content']
-        
-        print(score_text)
-        # Extract score from the response using GPT-4
-        score_extraction_response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": "Extraia a pontuação geral deste documento. Retorne apenas o numero da pontuação."},
-                      {"role": "user", "content": score_text}],
-        )
-        score = score_extraction_response.choices[0].message['content'].strip()
-
-        # Save the score and document name in the session
-        if 'document_scores' not in session:
-            session['document_scores'] = []
-        session['document_scores'].append({'document': uploaded_file.filename, 'score': float(score)})
-
-        return jsonify({"score": score})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
+    return ranking()
 
 @app.route('/display_rankings', methods=['GET'])
 def display_rankings():

@@ -1,3 +1,0 @@
-def sex():
-
-    return None
