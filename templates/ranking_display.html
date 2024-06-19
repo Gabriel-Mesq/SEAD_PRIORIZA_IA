@@ -15,8 +15,8 @@
     <h3></h3>      
 </div>
 </br></br></br>
-
 <div style="display: flex; align-items: center; justify-content: center;">
+    {% if documents %}
     <table class="table table-bordered" style="color: white;"> 
         <thead>
             <tr>
@@ -33,10 +33,11 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p style="color: white;">Nenhum documento disponível para exibição.</p>
+    {% endif %}
 </div>
-
 <script>
     
 </script>
-
 {% endblock %}
