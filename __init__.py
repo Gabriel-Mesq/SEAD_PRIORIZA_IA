@@ -48,6 +48,10 @@ def categorize():
 def rank():
     return render_template('rank.html')
 
+@app.route('/sobre')
+def about():
+    return render_template('about.html')
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
