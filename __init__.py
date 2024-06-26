@@ -13,7 +13,7 @@ from reportlab.lib.utils import simpleSplit
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from flask_session import Session
 
-from nonsense.ranking.rank_file import ranking
+from source.ranking.rank_file import ranking
 
 def generate_unique_filename(prefix):
     return f"{prefix}_{uuid.uuid4().hex}.txt"
