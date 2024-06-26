@@ -152,10 +152,8 @@ def download_review():
         logo_width = 80
         logo_height = 80
         margin_top = 56.7 
-        # Draw the logo centered
         logo_x_position = (width - logo_width) / 2
         canvas.drawImage(logo_path, logo_x_position, height - margin_top - logo_height, width=logo_width, height=logo_height)
-        # Draw the header text centered below the logo
         header_text = "Secretaria de Estado da Administração"
         canvas.setFont("Helvetica-Bold", 14)
         header_text_width = canvas.stringWidth(header_text, "Helvetica-Bold", 14)

@@ -22,11 +22,10 @@ def ranking():
             return jsonify({"error": "Unsupported file format"}), 400
 
         session['document_text'] = text_rank  # Store text in session
-
+        
         with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
             msg = prompt_file.read()
 
-        # Call to GPT-4 API
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": msg},
@@ -35,7 +34,7 @@ def ranking():
         score_text = response.choices[0].message['content']
         
         print(score_text)
-        # Extract score from the response using GPT-4
+        
         score_extraction_response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": "Extraia a pontuação geral deste documento. Retorne apenas o numero da pontuação."},
