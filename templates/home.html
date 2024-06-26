@@ -8,28 +8,30 @@
 
 <div id="titulo" style="text-align: center;">
     <h1>
-        <span style="color: RGB(255, 204, 0);">SEAD AI:</span> Protótipo para alinhamento de projetos SEAD ao planejamento estratégico
+        <span style="color: RGB(255, 204, 0);">SEAD AI:</span> Categorizador de TAPs
     </h1>
     </br>
-    <h3>Esta aplicação tem por objetivo auxiliar na classificação dos projetos contidos no portfólio SEAD, promovendo seu alinhamento ao Plano Estratégico 2023-26, por meio do uso e treinamento de IA Generativa (LLM) e da documentação disponível dos TAPs, Plano Plurianual, Ebook do Plano Estratégico SEAD e a literatura sobre a metodologia orientada por Objetivos e Resultados-Chave - OKRs.</h3>      
+    <h3></h3>      
 </div>
 </br></br></br></br>
 <div style="display: flex; align-items: center; justify-content: center;">
-    <img src="{{ url_for('static', filename='robo.png') }}" alt="Análise de Documentos" style="margin-right: 40px; width: auto; height: 300px;">
+    <img src="{{ url_for('static', filename='robo.png') }}" alt="Análise de Documentos" style="margin-right: 40px; width: auto; height: 500px;">
     <div style="text-align: center;">
         <h1>Envie um documento para análise</h1>
         <p>Formatos aceitos: .pdf, .docx</p>
         <form id="uploadForm" enctype="multipart/form-data">
             <!-- <label for="fileInput">Selecione um arquivo:</label><br>-->
             <input type="file" id="fileInput" name="file" required accept=".pdf, .docx" style="padding: 10px; border: 2px solid #008CBA; border-radius: 5px;"><br><br>
-            <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
+            <button type="submit" style="background-color: #008CBA; color: white; padding: 15px 20px 10px; border: none; border-radius:
+            5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar e Analizar</button>
         </form><br>
         <div id="fileResponseArea" style="margin-bottom: 20px; font-size: 22px;"></div>
 
         <!-- Hidden form to handle explanation request -->
         <form id="explanationForm" action="/explain" method="post" style="display:none;">
             <input type="hidden" name="text" id="categoryText">
-            <button id="explainButton" style="background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Obter Explicação</button>
+            <button id="explainButton" style="background-color: #4CAF50; color: white; padding: 15px 20px 10px; border: none; border-radius:
+            5px; cursor: pointer; transition: background-color 0.3s ease;">Obter Explicação</button>
         </form>
     </div>
 </div>

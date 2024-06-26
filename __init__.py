@@ -48,6 +48,10 @@ def categorize():
 def rank():
     return render_template('rank.html')
 
+@app.route('/sobre')
+def about():
+    return render_template('about.html')
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -263,7 +267,7 @@ def rank_file():
 @app.route('/display_rankings', methods=['GET'])
 def display_rankings():
     if 'document_scores' not in session or not session['document_scores']:
-        return jsonify({"error": "No document scores available"}), 400
+        return render_template('ranking_display.html', documents=[])
 
     # Sort documents by score in descending order
     sorted_documents = sorted(session['document_scores'], key=lambda x: x['score'], reverse=True)

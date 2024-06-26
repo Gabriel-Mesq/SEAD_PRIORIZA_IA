@@ -53,27 +53,31 @@
         <h1 class="h5 pl-3">
             <a href="/">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Icon"
-                style="max-width: 80px; max-height: 80px;">
+                style="max-width: 290px; max-height: 250px;">
             </a>
             {% block header %}{% endblock %}
             
         </h1>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
+                <li class="nav-item" style="margin-right: 8px;">
                     <a class="nav-link" href="/revisar" style="font-size: 1.25rem; color:white">Revisar TAP</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="margin-right: 8px;">
                     <a class="nav-link" href="/categorizar" style="font-size: 1.25rem; color:white">Categorizar TAP</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="margin-right: 8px;">
                     <a class="nav-link" href="/ranquear" style="font-size: 1.25rem; color:white">Ranquear TAP</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="margin-right: 8px;">
                     <a class="nav-link" href="/display_rankings" style="font-size: 1.25rem; color:white">Tabela de Ranking</a>
                 </li>
+                <li class="nav-item" style="margin-right: 8px;">
+                    <a class="nav-link" href="/sobre" style="font-size: 1.25rem; color:white">Sobre o Projeto</a>
+                </li>
             </ul>
-        </nav>        
+        </nav>
+               
     </header>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
