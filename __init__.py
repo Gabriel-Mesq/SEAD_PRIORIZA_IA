@@ -11,6 +11,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import simpleSplit
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from flask_session import Session
 
 from source.ranking.rank_file import ranking
@@ -144,8 +146,6 @@ def download_review():
 
     review_summary_html = session['review_summary']
 
-    review_summary = html2text.html2text(review_summary_html)
-
     # Create a PDF using reportlab
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -174,55 +174,20 @@ def download_review():
     add_footer(c)
 
     # Add text to the PDF
-    indent = 40  # Indentation for each paragraph
-    text_y_position = height - 140 - 56.7  # Adjust start position below the header, logo, and margin
-    max_lines_per_page = int((height - 160 - 56.7) / 14)  # Adjust this number based on the font size and page dimensions
-    line_height = 14  # Adjust line height according to the font size
-    line_count = 0
-    max_width = width - 80 - indent  # Adjust width to account for indentation
+    styles = getSampleStyleSheet()
+    style = styles["Normal"]
+    style.alignment = TA_JUSTIFY  # Justify the text
+    style.fontName = "Helvetica"
+    style.fontSize = 10
 
-    lines = review_summary.split('\n\n')  # Split the text into paragraphs
+    text = review_summary_html.replace('\n', '<br />')  # Convert newlines to HTML line breaks
+    paragraph = Paragraph(text, style)
+    width, height = letter
+    margin = 40
 
-    for paragraph in lines:
-        # Split the paragraph into lines that fit within the page width
-        wrapped_lines = simpleSplit(paragraph, "Helvetica", 12, max_width)
-
-        for i, wrapped_line in enumerate(wrapped_lines):
-            if line_count >= max_lines_per_page:
-                c.showPage()
-                add_footer(c)  # Add footer on each new page
-                text_y_position = height - 140 - 56.7  # Reset start position below the header, logo, and margin
-                line_count = 0
-
-            if i == 0:  # Indent the first line of each paragraph
-                text_object = c.beginText(40 + indent, text_y_position)
-            else:
-                text_object = c.beginText(40, text_y_position)
-
-            # Check for headers, set the font accordingly, and remove '#' symbols
-            if wrapped_line.startswith('###'):
-                text_object.setFont("Helvetica", 14)
-                wrapped_line = wrapped_line[3:].strip()
-            elif wrapped_line.startswith('##'):
-                text_object.setFont("Helvetica", 14)
-                wrapped_line = wrapped_line[2:].strip()
-            elif wrapped_line.startswith('#'):
-                text_object.setFont("Helvetica", 14)
-                wrapped_line = wrapped_line[1:].strip()
-            elif wrapped_line.startswith('* **'):
-                text_object.setFont("Helvetica-Bold", 10)
-                wrapped_line = wrapped_line[4:].strip()
-            else:
-                text_object.setFont("Helvetica", 10)
-
-            text_object.textLine(wrapped_line)
-            c.drawText(text_object)
-            text_y_position -= line_height
-            line_count += 1
-
-        # Add an extra line for paragraph separation
-        text_y_position -= line_height
-        line_count += 1
+    # Add paragraph to canvas with centering
+    paragraph_width, paragraph_height = paragraph.wrap(width - 2 * margin, height)
+    paragraph.drawOn(c, margin, height - 140 - 56.7 - paragraph_height)
 
     c.showPage()
     c.save()
