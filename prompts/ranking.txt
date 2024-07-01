@@ -4,7 +4,7 @@ Tabela de Critérios de Avaliação de Projetos:
             
 Categoria	Critério	Pontuação	Peso	Descrição Detalhada
 
-	Impacto para o Cidadão	1 a 5	5	Varia de impacto localizado a impacto em todo o estado.
+	Impacto para o Cidadão	1 a 5	4	Varia de impacto localizado a impacto em todo o estado.
 	Riscos Associados	1 a 5	4	Varia de riscos críticos a sem riscos significativos.
 	Contribuição para a Inovação e Transformação Digital	1 a 5	3	Varia de nenhuma contribuição a contribuição significativa.
 	Urgência	1 a 5	3	Varia de baixa a extrema urgência.
