@@ -13,7 +13,7 @@
     </br>    
 </div>
 </br></br></br>
-<div style="display: flex; align-items: center; justify-content: center;">
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
     {% if documents %}
     <table class="table table-bordered" style="color: white;"> 
         <thead>
@@ -31,11 +31,11 @@
             {% endfor %}
         </tbody>
     </table>
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('download_rankings') }}" class="btn btn-primary" style="padding: 10px 20px;">Baixar tabela em Excel</a>
+    </div>
     {% else %}
     <p style="color: white;">Nenhum documento disponível para exibição.</p>
     {% endif %}
 </div>
-<script>
-    
-</script>
 {% endblock %}

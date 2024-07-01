@@ -6,6 +6,7 @@ from docx import Document  # for handling DOCX files
 from waitress import serve
 import uuid
 import io
+import pandas as pd
 import html2text
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -30,6 +31,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Configure Flask-Session
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
+
 
 @app.route('/')
 def index():
@@ -229,6 +231,15 @@ def explain_category():
 def rank_file():
     return ranking()
 
+@app.route('/set_sample_data')
+def set_sample_data():
+    session['document_scores'] = [
+        {'document': 'Doc 1', 'score': 85},
+        {'document': 'Doc 2', 'score': 90},
+        {'document': 'Doc 3', 'score': 78},
+    ]
+    return "Sample data set!"
+
 @app.route('/display_rankings', methods=['GET'])
 def display_rankings():
     if 'document_scores' not in session or not session['document_scores']:
@@ -238,6 +249,29 @@ def display_rankings():
     sorted_documents = sorted(session['document_scores'], key=lambda x: x['score'], reverse=True)
 
     return render_template('ranking_display.html', documents=sorted_documents)
+
+@app.route('/download_rankings')
+def download_rankings():
+    if 'document_scores' not in session or not session['document_scores']:
+        return "No data available for download"
+
+    # Create a DataFrame from the session data
+    df = pd.DataFrame(session['document_scores'])
+
+    # Rename the columns
+    df.columns = ['Documento', 'Pontuação']
+
+    # Sort the DataFrame by score in descending order
+    df = df.sort_values(by='Score', ascending=False)
+
+    # Save the DataFrame to a BytesIO object
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='openpyxl')
+    df.to_excel(writer, index=False, sheet_name='Rankings')
+    writer._save()
+    output.seek(0)
+    
+    return send_file(output, download_name="rankings.xlsx", as_attachment=True)
 
 def extract_text_from_pdf(file):
     file_content = file.read()
