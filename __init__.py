@@ -262,7 +262,7 @@ def download_rankings():
     df.columns = ['Documento', 'Pontuação']
 
     # Sort the DataFrame by score in descending order
-    df = df.sort_values(by='Score', ascending=False)
+    df = df.sort_values(by='Pontuação', ascending=False)
 
     # Save the DataFrame to a BytesIO object
     output = io.BytesIO()
