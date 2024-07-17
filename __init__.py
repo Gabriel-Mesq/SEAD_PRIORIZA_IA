@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, jsonify, session, url_for, send_file
+from flask import Flask, request, render_template, jsonify, session, url_for, send_file, redirect
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
@@ -8,6 +8,7 @@ import uuid
 import io
 import pandas as pd
 import html2text
+import sqlite3
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import simpleSplit
@@ -242,36 +243,86 @@ def set_sample_data():
 
 @app.route('/display_rankings', methods=['GET'])
 def display_rankings():
-    if 'document_scores' not in session or not session['document_scores']:
-        return render_template('ranking_display.html', documents=[])
+    try:
+        conn = sqlite3.connect('document_scores.db')
+        c = conn.cursor()
+        c.execute("SELECT document, score, description FROM document_scores ORDER BY score DESC")
+        rows = c.fetchall()
+        conn.close()
 
-    # Sort documents by score in descending order
-    sorted_documents = sorted(session['document_scores'], key=lambda x: x['score'], reverse=True)
+        if not rows:
+            return render_template('ranking_display.html', documents=[], error="Nenhum documento disponível para exibição.")
 
-    return render_template('ranking_display.html', documents=sorted_documents)
+        documents = [{'document': row[0], 'score': row[1], 'description': row[2]} for row in rows]
+
+        return render_template('ranking_display.html', documents=documents)
+    except sqlite3.Error as e:
+        return render_template('ranking_display.html', documents=[], error="Nenhum documento disponível para exibição: " + str(e))
+
+    
+@app.route('/update_score', methods=['POST'])
+def update_score():
+    try:
+        score = request.form['score']
+        description = request.form['description']
+        document_name = request.form['document']
+        
+        print(f"Updating document {document_name} with score {score} and description {description}")  # Log the request data
+
+        conn = sqlite3.connect('document_scores.db')
+        c = conn.cursor()
+        c.execute("UPDATE document_scores SET score = ?, description = ? WHERE document = ?", (score, description, document_name))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True})
+    except sqlite3.Error as e:
+        print(f"Error: {str(e)}") 
+        return jsonify({"success": False, "error": str(e)}), 500
+
+    
+@app.route('/delete_document', methods=['POST'])
+def delete_document():
+    try:
+        data = request.get_json()
+        document_name = data['document']
+        
+        print(f"Deleting document {document_name}")  
+
+        conn = sqlite3.connect('document_scores.db')
+        c = conn.cursor()
+        c.execute("DELETE FROM document_scores WHERE document = ?", (document_name,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True})
+    except sqlite3.Error as e:
+        print(f"Error: {str(e)}")  
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/download_rankings')
 def download_rankings():
-    if 'document_scores' not in session or not session['document_scores']:
-        return "No data available for download"
+    try:
+        conn = sqlite3.connect('document_scores.db')
+        c = conn.cursor()
+        c.execute("SELECT document, score FROM document_scores ORDER BY score DESC")
+        rows = c.fetchall()
+        conn.close()
 
-    # Create a DataFrame from the session data
-    df = pd.DataFrame(session['document_scores'])
+        if not rows:
+            return "No data available for download"
 
-    # Rename the columns
-    df.columns = ['Documento', 'Pontuação']
+        df = pd.DataFrame(rows, columns=['Documento', 'Pontuação'])
 
-    # Sort the DataFrame by score in descending order
-    df = df.sort_values(by='Pontuação', ascending=False)
-
-    # Save the DataFrame to a BytesIO object
-    output = io.BytesIO()
-    writer = pd.ExcelWriter(output, engine='openpyxl')
-    df.to_excel(writer, index=False, sheet_name='Rankings')
-    writer._save()
-    output.seek(0)
-    
-    return send_file(output, download_name="rankings.xlsx", as_attachment=True)
+        output = io.BytesIO()
+        writer = pd.ExcelWriter(output, engine='openpyxl')
+        df.to_excel(writer, index=False, sheet_name='Rankings')
+        writer._save()
+        output.seek(0)
+        
+        return send_file(output, download_name="rankings.xlsx", as_attachment=True)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 def extract_text_from_pdf(file):
     file_content = file.read()

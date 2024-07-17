@@ -14,19 +14,28 @@
 </div>
 </br></br></br>
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    {% if documents %}
+    {% if error %}
+    <p style="color: white;">{{ error }}</p>
+    {% elif documents %}
     <table class="table table-bordered" style="color: white;"> 
         <thead>
             <tr>
                 <th>Documento</th>
+                <th>Descrição</th>
                 <th>Pontuação</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for doc in documents %}
             <tr>
                 <td>{{ doc.document }}</td>
+                <td>{{ doc.description }}</td>
                 <td>{{ doc.score }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="openModal('{{ doc.document|e }}', '{{ doc.score }}', '{{ doc.description|e }}')">Atualizar Dados</button></br></br>
+                    <button class="btn btn-danger" onclick="deleteDocument('{{ doc.document|e }}')">Excluir</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -38,4 +47,93 @@
     <p style="color: white;">Nenhum documento disponível para exibição.</p>
     {% endif %}
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="userScoreModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Atualizar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="scoreForm">
+                    <div class="form-group">
+                        <label for="score" class="col-form-label" style="color: black;">Nova Pontuação:</label>
+                        <input type="number" class="form-control" id="score" name="score" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="col-form-label" style="color: black;">Descrição:</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" id="document_name" name="document">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="submitScore()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(documentName, score, description) {
+    document.getElementById('document_name').value = documentName;
+    document.getElementById('score').value = score;
+    document.getElementById('description').value = description;
+    $('#userScoreModal').modal('show');
+}
+
+function submitScore() {
+    var form = document.getElementById('scoreForm');
+    var formData = new FormData(form);
+
+    fetch('{{ url_for("update_score") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  // Log the response for debugging
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocorreu um erro ao atualizar a pontuação e descrição.');
+    });
+}
+
+function deleteDocument(documentName) {
+    if (confirm('Você tem certeza que deseja excluir este documento?')) {
+        fetch('{{ url_for("delete_document") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ document: documentName })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Log the response for debugging
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocorreu um erro ao excluir o documento.');
+        });
+    }
+}
+</script>
+
 {% endblock %}

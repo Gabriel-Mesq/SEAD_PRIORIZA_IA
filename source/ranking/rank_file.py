@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, jsonify, session, url_for, send_file
+from flask import Flask, request, render_template, jsonify, url_for, send_file
 import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
+import sqlite3
 
 def ranking():
     if 'file' not in request.files:
@@ -20,8 +21,6 @@ def ranking():
             text_rank = optimize_text(extract_text_from_docx(uploaded_file))
         else:
             return jsonify({"error": "Unsupported file format"}), 400
-
-        session['document_text'] = text_rank  # Store text in session
         
         with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
             msg = prompt_file.read()
@@ -42,14 +41,27 @@ def ranking():
         )
         score = score_extraction_response.choices[0].message['content'].strip()
 
-        # Save the score and document name in the session
-        if 'document_scores' not in session:
-            session['document_scores'] = []
-        session['document_scores'].append({'document': uploaded_file.filename, 'score': float(score)})
+        description_generation_response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": "Leia o documento e gere uma descrição concisa e breve."},
+                      {"role": "user", "content": text_rank}],
+        )
+        description = description_generation_response.choices[0].message['content'].strip()
 
-        return jsonify({"score": score})
+        # Generate SQL file and insert the document name, score, and description with user_score defaulting to 0
+        conn = sqlite3.connect('document_scores.db')
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS document_scores
+                     (id INTEGER PRIMARY KEY, document TEXT, score REAL, description TEXT, user_score REAL DEFAULT 0)''')
+        c.execute("INSERT INTO document_scores (document, score, description, user_score) VALUES (?, ?, ?, ?)",
+                  (uploaded_file.filename, float(score), description, 0))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"score": score, "description": description})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 def extract_text_from_pdf(file):
