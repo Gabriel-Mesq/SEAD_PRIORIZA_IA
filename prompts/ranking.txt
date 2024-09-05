@@ -4,12 +4,21 @@ Tabela de Critérios de Avaliação de Projetos:
             
 Categoria	Critério	Pontuação	Peso	Descrição Detalhada
 
-	Impacto para o Cidadão	1 a 5	4	Varia de impacto localizado a impacto em todo o estado.
-	Riscos Associados	1 a 5	4	Varia de riscos críticos a sem riscos significativos.
-	Contribuição para a Inovação e Transformação Digital	1 a 5	3	Varia de nenhuma contribuição a contribuição significativa.
-	Urgência	1 a 5	3	Varia de baixa a extrema urgência.
-	Impacto na Gestão	1 a 3	3	Varia de impacto baixo a alto.
-	Viabilidade Técnica e Financeira	1 a 5	3	Varia de inviável a totalmente viável e bem financiado.
+	Alinhamento com OKRs Estratégicos; 	1 a 2;	5;	1-Sem Alinhamento 2-Com Alinhamento
+
+	Impacto para o Cidadão;	1 a 5;	5;	1 – Impacta um pequeno grupo, 2 – Impacta somente um segmento de pessoas, 3 – Impacta pessoas de algumas cidades, 4 – Impacta várias regiões, 5 – Impacta todo o Estado.
+
+	Viabilidade Financeira; 1 a 5;	4;   1 – Sem recursos, 2 – Recurso não disponível, 3– Recursos parcial, 4 – Recurso completo, 5 – Não necessita de recurso
+
+	Viabilidade Técnica;	1 a 3;	4;	1 – Requer recursos que não existem, ou não disponíveis, 2 – Requer recursos que foram pouco testados, ou com pouca disponibilidade, 3 – Requer recursos já consolidados e disponíveis. 
+
+	Impacto na Gestão;	1 a 3;	3;	1 – Impacto baixo, 2 – Impacto moderado/alto, 3 – Entrega nessa gestão
+
+	Exigência Legal; 1 a 2; 5; 1 – sem exigência legal, 2- Exigido por lei 
+
+	Projeto novo ou em andamento; 1 a 2; 2; 1 – projeto novo, 2 – Projeto em andamento 
+
+	Gestão Interna; 1 a 2; 1; 1 – Gestão interna, 2 –Gestão externa 
 
 Na sua resposta, retorne apenas a pontuação, isto é, a somatória dos pontos de cada critério multiplicada pelos respectivos pesos.
             

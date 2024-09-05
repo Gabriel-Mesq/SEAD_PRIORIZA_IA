@@ -232,15 +232,6 @@ def explain_category():
 def rank_file():
     return ranking()
 
-@app.route('/set_sample_data')
-def set_sample_data():
-    session['document_scores'] = [
-        {'document': 'Doc 1', 'score': 85},
-        {'document': 'Doc 2', 'score': 90},
-        {'document': 'Doc 3', 'score': 78},
-    ]
-    return "Sample data set!"
-
 @app.route('/display_rankings', methods=['GET'])
 def display_rankings():
     try:
