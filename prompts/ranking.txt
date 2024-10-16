@@ -4,21 +4,21 @@ Tabela de Critérios de Avaliação de Projetos:
             
 Categoria	Critério	Pontuação	Peso	Descrição Detalhada
 
-	Alinhamento com OKRs Estratégicos; 	1 a 2;	5;	1-Sem Alinhamento 2-Com Alinhamento
+	Alinhamento com OKRs Estratégicos; 	1 a 5;	5;	1-Sem Alinhamento 5-Total Alinhamento
 
 	Impacto para o Cidadão;	1 a 5;	5;	1 – Impacta um pequeno grupo, 2 – Impacta somente um segmento de pessoas, 3 – Impacta pessoas de algumas cidades, 4 – Impacta várias regiões, 5 – Impacta todo o Estado.
 
 	Viabilidade Financeira; 1 a 5;	4;   1 – Sem recursos, 2 – Recurso não disponível, 3– Recursos parcial, 4 – Recurso completo, 5 – Não necessita de recurso
 
-	Viabilidade Técnica;	1 a 3;	4;	1 – Requer recursos que não existem, ou não disponíveis, 2 – Requer recursos que foram pouco testados, ou com pouca disponibilidade, 3 – Requer recursos já consolidados e disponíveis. 
+	Viabilidade Técnica;	1 a 5;	4;	1 – Requer recursos que não existem, 2 - Recursos não disponíveis, 3 – Requer recursos que foram pouco testados, ou com pouca disponibilidade, 4 – Requer recursos já consolidados e disponíveis, 5 - Recursos amplamente acessiveis e sem impedimentos
 
 	Impacto na Gestão;	1 a 3;	3;	1 – Impacto baixo, 2 – Impacto moderado/alto, 3 – Entrega nessa gestão
 
-	Exigência Legal; 1 a 2; 5; 1 – sem exigência legal, 2- Exigido por lei 
+	Exigência Legal; 1 ou 5; 5; 1 – sem exigência legal, 5 - Exigido por lei 
 
-	Projeto novo ou em andamento; 1 a 2; 2; 1 – projeto novo, 2 – Projeto em andamento 
+	Projeto novo ou em andamento; 1 ou 5; 2; 1 – projeto novo, 2 – Projeto em andamento 
 
-	Gestão Interna; 1 a 2; 1; 1 – Gestão interna, 2 –Gestão externa 
+	Gestão Interna; 1 ou 5; 1; 1 – Gestão interna, 5 – Gestão externa 
 
 Na sua resposta, retorne apenas a pontuação, isto é, a somatória dos pontos de cada critério multiplicada pelos respectivos pesos.
             

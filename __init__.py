@@ -315,6 +315,7 @@ def download_rankings():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 def extract_text_from_pdf(file):
     file_content = file.read()
     doc = fitz.open("pdf", file_content)
@@ -342,5 +343,5 @@ def optimize_text(text):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    #serve(app, host='0.0.0.0', port=5000)
+    #app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5000)
