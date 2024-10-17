@@ -4,6 +4,8 @@ import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 import sqlite3
 
+from source.ranking.string_manipulation import get_project_name
+
 def ranking():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -53,16 +55,17 @@ def ranking():
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS document_scores
                      (id INTEGER PRIMARY KEY, document TEXT, score REAL, description TEXT, user_score REAL DEFAULT 0)''')
+        
+        project_name = get_project_name(text_rank) if get_project_name != None else uploaded_file.filename 
+
         c.execute("INSERT INTO document_scores (document, score, description, user_score) VALUES (?, ?, ?, ?)",
-                  (uploaded_file.filename, float(score), description, 0))
+                  (project_name, float(score), description, 0))
         conn.commit()
         conn.close()
 
         return jsonify({"score": score, "description": description})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
 
 def extract_text_from_pdf(file):
     file_content = file.read()
