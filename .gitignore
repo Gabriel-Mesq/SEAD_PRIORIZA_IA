@@ -1,6 +1,7 @@
 flask_session/
 templates/
 secrets_Abada.txt
+password.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
