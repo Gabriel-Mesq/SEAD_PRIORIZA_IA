@@ -4,8 +4,7 @@ import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 import sqlite3
 
-from string_manipulation import get_project_name
-
+from app.string_manipulation import get_project_name
 def ranking():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
