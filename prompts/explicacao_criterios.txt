@@ -1,7 +1,0 @@
-1.	Alinhamento com OKRs Estratégicos: Medir o quanto um projeto contribui para alcançar os Objetivos e Resultados-Chave (OKRs) definidos no Planejamento Estratégico. Projetos que suportam diretamente os OKRs estratégicos devem receber uma pontuação mais alta.
-2.	Impacto nos Serviços ao Cidadão: Avaliar o impacto potencial de um projeto na melhoria dos serviços oferecidos aos cidadãos. Projetos que visam aumentar a eficiência, acessibilidade e qualidade dos serviços públicos devem ser priorizados.
-3.	Viabilidade Técnica e Financeira: Analisar a viabilidade técnica do projeto e a disponibilidade de recursos financeiros para sua execução. Projetos com alta viabilidade técnica e sustentabilidade financeira devem ter prioridade.
-4.	Urgência: Considerar o nível de urgência do projeto baseado em prazos legais ou administrativos, bem como em metas governamentais iminentes.
-5.	Riscos Associados: Avaliar os riscos relacionados à execução do projeto, incluindo riscos políticos, financeiros, operacionais e de reputação. Projetos com riscos gerenciáveis e mitigáveis devem ser mais bem pontuados.
-6.	Contribuição para a Inovação e Transformação Digital: Projetos que contribuem para a modernização e digitalização dos serviços da administração pública, conforme enfatizado nos documentos estratégicos, devem ser priorizados.
-7.	Interdependência com Outros Projetos: Avaliar como um projeto está conectado a outros projetos e iniciativas dentro da SEAD. Projetos que são fundamentais para o sucesso de outros projetos estratégicos devem ter prioridade.
