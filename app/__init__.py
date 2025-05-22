@@ -17,7 +17,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from flask_session import Session
 
-from source.ranking.rank_file import ranking
+from rank_file import ranking
 
 def generate_unique_filename(prefix):
     return f"{prefix}_{uuid.uuid4().hex}.txt"
@@ -344,4 +344,6 @@ def optimize_text(text):
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    serve(app, host='0.0.0.0', port=5000)
+    print("Server is running")
+    serve(app, host='0.0.0.0', port=4567)
+

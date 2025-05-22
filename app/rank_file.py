@@ -4,7 +4,7 @@ import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 import sqlite3
 
-from source.ranking.string_manipulation import get_project_name
+from string_manipulation import get_project_name
 
 def ranking():
     if 'file' not in request.files:
