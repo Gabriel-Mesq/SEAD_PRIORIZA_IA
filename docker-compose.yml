@@ -1,7 +1,13 @@
+version: "3.9"
 services:
-  fastapi:
-    build: .
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - "4567:4567"
+    volumes:
+      - ./app:/app
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    # Adicione outras variáveis de ambiente se necessário
