@@ -24,3 +24,5 @@ O novo software desenvolvido tem como objetivo otimizar e aprimorar o processo d
 ### Conclusão
 A implementação deste software representa um potencial grande avanço para a SEAD, promovendo mais agilidade, precisão e inteligência na gestão dos TAPs. Com isso, a tomada de decisões será mais embasada, resultando em maior eficiência operacional e melhor alocação de recursos para os projetos de maior impacto.
 
+git push origin main
+git push gitlab main
