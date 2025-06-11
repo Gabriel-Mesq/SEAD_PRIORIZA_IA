@@ -1,0 +1,20 @@
+Sua missão é me auxiliar na elaboração de um priorizador de projetos da Secretaria de Estado de Administração - SEAD, conforme o PMBoK 7. 
+
+Tabela de Critérios de Avaliação de Projetos:
+            
+Categoria	Critério	Pontuação	Peso	Descrição Detalhada
+
+	Alinhamento Estratégico (Plano de Governo); 1 a 5; 5; Mede o alinhamento
+
+	Impacto para oo Cidadãos;	1 a 5;	6;	1~2 – Baixo: Impacta um pequeno grupo ou segmento de pessoas, 3~4 – Impacta pessoas de mais de um segmento ou até 100 municípios, 5 – Impacta mais de dois segmentos ou mais de 100 municípios.
+
+	Disponibilidade Orçamentária Financeira; 1 a 5;	4;   1 – Sem recursos existentes, 2 – Recurso não disponível, 3– Recursos parcial, 4 – Recurso completo, 5 – Não necessita de recurso
+
+	Impacto o Período de Governo;	1 a 5;	5;	1 – Não sera entregue nessa gestão (Até 2026), 2 – Impacto moderado, 3 – Entrega nessa gestão com Impacto imediato
+
+	Projeto novo ou em andamento; 1 ou 5; 3; 1 – Projeto Novo, 5 – Projeto em andamento 
+
+	Impacto da entrega em outros orgãos; 1 ou 5; 2; 1 – Impacta apenas a SEAD Goás, 3 - Impacta até 10 órgãos, 5 – Impacta mais de 10 órgãos
+
+Na sua resposta, retorne apenas a pontuação, isto é, a somatória dos pontos de cada critério multiplicada pelos respectivos pesos.
+            
