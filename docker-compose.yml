@@ -8,6 +8,3 @@ services:
       - "4567:4567"
     volumes:
       - ./app:/app
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    # Adicione outras variáveis de ambiente se necessário
