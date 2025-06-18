@@ -1,10 +1,24 @@
 version: "3.9"
 services:
-  app:
+  prioriza_ia:
     build:
       context: ./app
       dockerfile: Dockerfile
-    ports:
-      - "4567:4567"
+    image: repo.adminsitracao.go.gov.br/prioriza_ia:latest
+    container_name: prioriza_ia
+    restart: unless-stopped
+    hostname: prioriza_ia
+    environment:
+      - TZ=America/Sao_Paulo
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - ./app:/app
+    ports:
+      - "4567:4567"
+    networks:
+      - netprioriza_ia
+networks:
+  netprioriza_ia:
+    name: netprioriza_ia
+    driver: bridge
+    # Adicione outras variáveis de ambiente se necessário
