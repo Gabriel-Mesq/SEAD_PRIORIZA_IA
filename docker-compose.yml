@@ -10,7 +10,6 @@ services:
     hostname: prioriza_ia
     environment:
       - TZ=America/Sao_Paulo
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - ./app:/app
     ports:
