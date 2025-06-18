@@ -1,6 +1,5 @@
 import os
 import io
-import openai
 import pandas as pd
 import sqlite3
 from flask import jsonify, send_file
@@ -13,7 +12,7 @@ from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_JUSTIFY
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+from api.llama_client import call_llama
 
 def extract_text_from_pdf(file):
     file_content = file.read()
@@ -61,13 +60,10 @@ def handle_upload(request, session):
         with open('prompts/tap_category.txt', 'r') as prompt_file:
             msg = prompt_file.read()
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4-turbo",
-            messages=[{"role": "system", "content": msg},
-                      {"role": "user", "content": text}],
-            max_tokens=50
-        )
-        category = response.choices[0].message['content']
+        llama_prompt = f"{msg}\n\n{text}"
+        llama_response = call_llama(llama_prompt)
+        category = llama_response.get("response", "")
+
         return jsonify({"category": category})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -95,15 +91,9 @@ def handle_review(request, session):
         with open('prompts/review.txt', 'r', encoding='latin1') as prompt_file:
             review_prompt = prompt_file.read()
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4-turbo",
-            messages=[
-                {"role": "system", "content": review_prompt},
-                {"role": "user", "content": text_review}
-            ]
-        )
-
-        review_summary = response.choices[0].message['content']
+        llama_prompt = f"{review_prompt}\n\n{text_review}"
+        llama_response = call_llama(llama_prompt)
+        review_summary = llama_response.get("response", "")
         if review_summary.startswith("```html"):
             review_summary = review_summary[7:-3]
 
@@ -180,12 +170,9 @@ def handle_explain(request, session, url_for, render_template):
         f"Retorne a resposta em formato HTML, com as devidas tags."
     )
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4-turbo",
-        messages=[{"role": "system", "content": explanation_prompt},
-                  {"role": "user", "content": session['document_text']}]
-    )
-    explanation = response.choices[0].message['content']
+    llama_prompt = f"{explanation_prompt}\n\n{session['document_text']}"
+    llama_response = call_llama(llama_prompt)
+    explanation = llama_response.get("response", "")
     if explanation.startswith("```html"):
         explanation = explanation[7:-3]
 
