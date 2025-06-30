@@ -4,6 +4,7 @@ WORKDIR /code
 
 COPY ./app /code/app
 COPY ./api /code/api
+COPY ./prompts /code/prompts
 
 ENV PYTHONPATH="/code/app:/code/api"
 

@@ -13,6 +13,7 @@ services:
     volumes:
       - ./app:/code/app         # monta app no mesmo caminho do Dockerfile
       - ./api:/code/api         # monta api no mesmo caminho do Dockerfile
+      - ./prompts:/code/prompts # monta prompts no mesmo caminho do Dockerfile
     ports:
       - "4567:4567"
     networks:
