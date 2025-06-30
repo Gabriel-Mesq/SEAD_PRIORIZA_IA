@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /code
 
-COPY ../app /code/app
-COPY ../api /code/api
+COPY ./app /code/app
+COPY ./api /code/api
 
 ENV PYTHONPATH="/code/app:/code/api"
 
