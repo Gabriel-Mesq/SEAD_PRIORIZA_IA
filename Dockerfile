@@ -1,18 +1,15 @@
-# Usar imagem oficial do Python
-FROM python:3.13-slim
+FROM python:3.11-slim
 
-# Definir diretório de trabalho
-WORKDIR /api
+WORKDIR /code
 
-# Copiar arquivos
-COPY ./api /api
-COPY requirements.txt .
+COPY ../app /code/app
+COPY ../api /code/api
 
-# Instalar dependências
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONPATH="/code/app:/code/api"
 
-# Expor porta
-EXPOSE 8000
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir flask flask-session openai pymupdf python-docx pandas html2text reportlab waitress openpyxl
 
-# Comando para rodar a API
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 4567
+
+CMD ["python", "-m", "app.main"]

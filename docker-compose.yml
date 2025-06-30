@@ -2,8 +2,8 @@ version: "3.9"
 services:
   prioriza_ia:
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: .                # contexto na raiz
+      dockerfile: Dockerfile    # Dockerfile na raiz
     image: repo.adminsitracao.go.gov.br/prioriza_ia:latest
     container_name: prioriza_ia
     restart: unless-stopped
@@ -11,7 +11,8 @@ services:
     environment:
       - TZ=America/Sao_Paulo
     volumes:
-      - ./app:/app
+      - ./app:/code/app         # monta app no mesmo caminho do Dockerfile
+      - ./api:/code/api         # monta api no mesmo caminho do Dockerfile
     ports:
       - "4567:4567"
     networks:
@@ -20,4 +21,3 @@ networks:
   netprioriza_ia:
     name: netprioriza_ia
     driver: bridge
-    # Adicione outras variáveis de ambiente se necessário
