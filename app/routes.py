@@ -5,6 +5,7 @@ from .services import (
     handle_display_rankings, handle_update_score, handle_delete_document,
     handle_download_rankings
 )
+from .rank_file import ranking  # Adicione esta linha
 
 routes = Blueprint('routes', __name__)
 
@@ -59,3 +60,7 @@ def delete_document():
 @routes.route('/download_rankings')
 def download_rankings():
     return handle_download_rankings(send_file)
+
+@routes.route('/ranking', methods=['POST'])  # Adicione esta rota
+def ranking_route():
+    return ranking()

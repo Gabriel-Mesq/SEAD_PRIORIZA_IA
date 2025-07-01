@@ -1,10 +1,11 @@
 from flask import Flask, request, render_template, jsonify, url_for, send_file
-import openai
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
 import sqlite3
 
 from app.string_manipulation import get_project_name
+from api.llama_client import call_llama  # ADICIONE ESTA LINHA
+
 def ranking():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -26,30 +27,25 @@ def ranking():
         with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
             msg = prompt_file.read()
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": msg},
-                      {"role": "user", "content": text_rank}],
-        )
-        score_text = response.choices[0].message['content']
-        
-        print(score_text)
-        
-        score_extraction_response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": "Extraia a pontuação geral deste documento. Retorne apenas o numero da pontuação."},
-                      {"role": "user", "content": score_text}],
-        )
-        score = score_extraction_response.choices[0].message['content'].strip()
+        # CHAMADA AO LLAMA PARA RANKING
+        llama_response = call_llama(f"{msg}\n{text_rank}")
+        if "error" in llama_response:
+            return jsonify({"error": llama_response["message"]}), 500
+        score_text = llama_response["response"]
 
-        description_generation_response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": "Leia o documento e gere uma descrição concisa e breve."},
-                      {"role": "user", "content": text_rank}],
-        )
-        description = description_generation_response.choices[0].message['content'].strip()
+        # CHAMADA AO LLAMA PARA EXTRAIR SÓ O SCORE
+        score_extraction = call_llama("Extraia a pontuação geral deste documento. Retorne apenas o numero da pontuação.\n" + score_text)
+        if "error" in score_extraction:
+            return jsonify({"error": score_extraction["message"]}), 500
+        score = score_extraction["response"].strip()
 
-        # Generate SQL file and insert the document name, score, and description with user_score defaulting to 0
+        # CHAMADA AO LLAMA PARA GERAR DESCRIÇÃO
+        description_generation = call_llama("Leia o documento e gere uma descrição concisa e breve.\n" + text_rank)
+        if "error" in description_generation:
+            return jsonify({"error": description_generation["message"]}), 500
+        description = description_generation["response"].strip()
+
+        # Banco de dados
         conn = sqlite3.connect('document_scores.db')
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS document_scores
