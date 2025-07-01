@@ -41,7 +41,7 @@
         </tbody>
     </table>
     <div style="margin-top: 20px;">
-        <a href="{{ url_for('download_rankings') }}" class="btn btn-primary" style="padding: 10px 20px;">Baixar tabela em Excel</a>
+        <a href="{{ url_for('routes.download_rankings') }}" class="btn btn-primary" style="padding: 10px 20px;">Baixar tabela em Excel</a>
     </div>
     {% else %}
     <p style="color: white;">Nenhum documento disponível para exibição.</p>
@@ -91,7 +91,7 @@ function submitScore() {
     var form = document.getElementById('scoreForm');
     var formData = new FormData(form);
 
-    fetch('{{ url_for("update_score") }}', {
+    fetch('{{ url_for("routes.update_score") }}', {
         method: 'POST',
         body: formData
     })
@@ -112,7 +112,7 @@ function submitScore() {
 
 function deleteDocument(documentName) {
     if (confirm('Você tem certeza que deseja excluir este documento?')) {
-        fetch('{{ url_for("delete_document") }}', {
+        fetch('{{ url_for("routes.delete_document") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
