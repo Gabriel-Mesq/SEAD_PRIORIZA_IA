@@ -16,5 +16,5 @@ Categoria	Critério	Pontuação	Peso	Descrição Detalhada
 
 	Impacto da entrega em outros orgãos; 1 ou 5; 2; 1 – Impacta apenas a SEAD Goás, 3 - Impacta até 10 órgãos, 5 – Impacta mais de 10 órgãos
 
-Na sua resposta, retorne apenas a pontuação, isto é, a somatória dos pontos de cada critério multiplicada pelos respectivos pesos.
+Na sua resposta, retorne apenas a pontuação, isto é, a somatória dos pontos de cada critério multiplicada pelos respectivos pesos. Nada alem de um número como resposta.
             
