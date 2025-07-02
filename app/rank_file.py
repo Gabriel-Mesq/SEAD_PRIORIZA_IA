@@ -1,3 +1,4 @@
+from cv2 import log
 from flask import Flask, request, render_template, jsonify, url_for, send_file
 import fitz  # PyMuPDF, for handling PDF files
 from docx import Document  # for handling DOCX files
@@ -26,6 +27,8 @@ def ranking():
         
         with open('prompts/ranking.txt', 'r', encoding='utf-8') as prompt_file:
             msg = prompt_file.read()
+
+        print(f"Texto otimizado: {text_rank}")
 
         # CHAMADA AO LLAMA PARA RANKING
         llama_response = call_llama(f"{msg}\n{text_rank}")
