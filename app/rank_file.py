@@ -40,7 +40,7 @@ def ranking():
         score = score_extraction["response"].strip()
 
         # CHAMADA AO LLAMA PARA GERAR DESCRIÇÃO
-        description_generation = call_llama("Leia o texto abaixo e gere uma descrição concisa e breve.\n" + text_rank)
+        description_generation = call_llama(f"Leia o texto abaixo e gere uma descrição concisa e breve.\n{text_rank}")
         if "error" in description_generation:
             return jsonify({"error": description_generation["message"]}), 500
         description = description_generation["response"].strip()
