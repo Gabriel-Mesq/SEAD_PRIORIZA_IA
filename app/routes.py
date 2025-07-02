@@ -61,6 +61,6 @@ def delete_document():
 def download_rankings():
     return handle_download_rankings(send_file)
 
-@routes.route('/ranking', methods=['POST'])  # Adicione esta rota
+@routes.route('/ranking', methods=['POST']) 
 def ranking_route():
     return ranking()
