@@ -14,6 +14,11 @@ from reportlab.lib.enums import TA_JUSTIFY
 
 from api.llama_client import call_llama
 
+DB_PATH = 'document_scores.db'
+
+def get_db_connection():
+    return sqlite3.connect(DB_PATH)
+
 def extract_text_from_pdf(file):
     file_content = file.read()
     doc = fitz.open("pdf", file_content)
@@ -217,33 +222,31 @@ def handle_delete_document(request):
         data = request.get_json()
         document_name = data['document']
 
-        conn = sqlite3.connect('document_scores.db')
-        c = conn.cursor()
-        c.execute("DELETE FROM document_scores WHERE document = ?", (document_name,))
-        conn.commit()
-        conn.close()
+        with get_db_connection() as conn:
+            c = conn.cursor()
+            c.execute("DELETE FROM document_scores WHERE document = ?", (document_name,))
+            conn.commit()
 
         return jsonify({"success": True})
     except sqlite3.Error as e:
+        return jsonify({"success": False, "error": f"Erro no banco de dados: {e}"}), 500
+    except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
 def handle_download_rankings(send_file):
     try:
-        conn = sqlite3.connect('document_scores.db')
-        c = conn.cursor()
-        c.execute("SELECT document, score FROM document_scores ORDER BY score DESC")
-        rows = c.fetchall()
-        conn.close()
+        with get_db_connection() as conn:
+            c = conn.cursor()
+            c.execute("SELECT document, score FROM document_scores ORDER BY score DESC")
+            rows = c.fetchall()
 
         if not rows:
-            return "No data available for download"
+            return jsonify({"error": "Nenhum dado disponível para download."}), 404
 
         df = pd.DataFrame(rows, columns=['Documento', 'Pontuação'])
-
         output = io.BytesIO()
-        writer = pd.ExcelWriter(output, engine='openpyxl')
-        df.to_excel(writer, index=False, sheet_name='Rankings')
-        writer._save()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Rankings')
         output.seek(0)
 
         return send_file(output, download_name="rankings.xlsx", as_attachment=True)
